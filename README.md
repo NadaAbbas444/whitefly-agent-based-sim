@@ -1,6 +1,7 @@
 # Whitefly Tape Watch: an agent-based simulation
 
-[![Tests](https://github.com/nadaabbas444/whitefly-agent-based-sim/actions/workflows/test.yml/badge.svg)](https://github.com/nadaabbas444/whitefly-agent-based-sim/actions/workflows/test.yml)
+[![Tests](https://github.com/NadaAbbas444/whitefly-agent-based-sim/actions/workflows/test.yml/badge.svg)](https://github.com/NadaAbbas444/whitefly-agent-based-sim/actions/workflows/test.yml)
+[![Deploy](https://github.com/NadaAbbas444/whitefly-agent-based-sim/actions/workflows/pages.yml/badge.svg)](https://github.com/NadaAbbas444/whitefly-agent-based-sim/actions/workflows/pages.yml)
 [![Live demo](https://img.shields.io/badge/demo-live-c8e88c)](https://nadaabbas444.github.io/whitefly-agent-based-sim/)
 ![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776ab)
 ![No runtime dependencies](https://img.shields.io/badge/runtime%20deps-none-2f6e3b)

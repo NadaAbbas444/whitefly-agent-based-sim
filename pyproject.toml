@@ -23,7 +23,7 @@ dev = ["pytest>=7", "matplotlib>=3.6", "ruff>=0.5"]
 
 [project.urls]
 Demo = "https://nadaabbas444.github.io/whitefly-agent-based-sim/"
-Source = "https://github.com/nadaabbas444/whitefly-agent-based-sim"
+Source = "https://github.com/NadaAbbas444/whitefly-agent-based-sim"
 
 [tool.setuptools]
 packages = ["whitefly"]
