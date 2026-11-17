@@ -324,9 +324,58 @@ $('run-exp').addEventListener('click', async () => {
     )
     .join('');
   $('exp-table').hidden = false;
+  const summary = summaryText(rows);
+  $('exp-summary').textContent = summary;
+  $('exp-summary').hidden = !summary;
   $('exp-status').textContent = `Done: ${GAPS.length * SEEDS.length + SEEDS.length} runs of ${EXP_DAYS} days. "—" means the tape did not reach the threshold in any run.`;
   btn.disabled = false;
 });
+
+/** Plain-language reading of the experiment table. */
+function summaryText(rows) {
+  const best = rows[0];
+  if (best.detectDay === null) {
+    return 'At these settings the tape did not detect the infestation within 60 days, even with no gap. Try a warmer greenhouse or a lower detection threshold.';
+  }
+  const parts = [
+    `With the tape right at the canopy top, it detects the infestation around day ${Math.round(best.detectDay)}, ` +
+      `when about ${fmt.format(Math.round(best.adultsAtDetect))} adults and ${fmt.format(Math.round(best.immatureAtDetect))} eggs and nymphs are already in the row.`,
+  ];
+  const mid = rows.find((r) => r.gap === 0.5);
+  if (mid && mid.detectDay !== null) {
+    const weeks = (mid.detectDay - best.detectDay) / 7;
+    parts.push(`With a 0.5 m gap it takes until about day ${Math.round(mid.detectDay)}, roughly ${weeks.toFixed(1)} weeks later.`);
+  } else if (mid) {
+    parts.push('With a 0.5 m gap the tape never reached the threshold.');
+  }
+  const firstMiss = rows.find((r) => r.missed >= 0.5);
+  if (firstMiss) parts.push(`From a ${firstMiss.gap} m gap on, the tape misses the infestation in at least half of the runs.`);
+  return parts.join(' ');
+}
+
+// ---------- Model tabs ----------
+const tabs = [...document.querySelectorAll('.tabs [role="tab"]')];
+function selectTab(tab, focus = false) {
+  for (const t of tabs) {
+    const on = t === tab;
+    t.setAttribute('aria-selected', String(on));
+    t.tabIndex = on ? 0 : -1;
+    $(t.getAttribute('aria-controls')).hidden = !on;
+  }
+  if (focus) tab.focus();
+}
+tabs.forEach((tab, i) => {
+  tab.addEventListener('click', () => selectTab(tab));
+  tab.addEventListener('keydown', (e) => {
+    const step = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+    if (!step) return;
+    e.preventDefault();
+    selectTab(tabs[(i + step + tabs.length) % tabs.length], true);
+  });
+});
+for (const link of document.querySelectorAll('a[data-tab]')) {
+  link.addEventListener('click', () => selectTab($(link.dataset.tab)));
+}
 
 // ---------- Shareable links: ?gap=0.8 ?seed=3 ?speed=8 ?warmup=40 ----------
 const query = new URLSearchParams(location.search);

@@ -22,6 +22,7 @@
         <div class="hero-links">
           <a class="btn primary" href="#sim">Try the simulation</a>
           <a class="btn" href="#experiment">See the results</a>
+          <a class="btn" href="#model">How the model works</a>
         </div>
       </div>
       <img class="hero-photo" src="assets/greenhouse-rows.jpg" alt="Long rows of tomato plants in a commercial greenhouse" />
@@ -148,7 +149,17 @@
         </div>
         <button id="run-exp" class="primary">Run experiment</button>
       </div>
+      <details class="howto">
+        <summary>How to read these results</summary>
+        <ul>
+          <li><strong>Left chart:</strong> the day the tape first catches a fly (blue) and the day it reaches the detection threshold (yellow), for each gap. Higher means later warning.</li>
+          <li><strong>Right chart:</strong> how many adult whiteflies are already in the row when the tape detects them. Higher means the infestation is bigger by the time anyone knows.</li>
+          <li><strong>Table:</strong> also shows the hidden eggs and nymphs, how often the tape never detects the infestation, and how much the tape itself reduces the population.</li>
+          <li>Definitions of every column are in the <a href="#model" data-tab="tab-measures">What we measure</a> tab below.</li>
+        </ul>
+      </details>
       <p id="exp-status" class="status" aria-live="polite">Press <strong>Run experiment</strong>. It takes a few seconds.</p>
+      <p id="exp-summary" class="callout" hidden></p>
       <div class="exp-charts">
         <div>
           <h3>Day the tape shows the infestation (median)</h3>
@@ -170,8 +181,121 @@
     </div>
   </section>
 
+  <section class="model layout-single" id="model" aria-labelledby="model-title">
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2 id="model-title">How the model works</h2>
+          <p class="sub">What the simulation does, which values come from studies, which are assumptions, and what the numbers mean.</p>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Model details">
+        <button role="tab" id="tab-rules" aria-controls="panel-rules" aria-selected="true">Model rules</button>
+        <button role="tab" id="tab-assumptions" aria-controls="panel-assumptions" aria-selected="false" tabindex="-1">Assumptions</button>
+        <button role="tab" id="tab-measures" aria-controls="panel-measures" aria-selected="false" tabindex="-1">What we measure</button>
+        <button role="tab" id="tab-sources" aria-controls="panel-sources" aria-selected="false" tabindex="-1">Sources</button>
+        <button role="tab" id="tab-limits" aria-controls="panel-limits" aria-selected="false" tabindex="-1">Limitations</button>
+      </div>
+
+      <div class="tab-panel" role="tabpanel" id="panel-rules" aria-labelledby="tab-rules" tabindex="0">
+        <p>This is an <strong>agent-based model</strong>: every adult whitefly is simulated on its own, with its own position, and follows simple rules every 15 minutes of greenhouse time. The infestation pattern is not programmed in; it comes out of many individual flies living, flying, laying eggs and sometimes landing on the tape.</p>
+        <div class="table-scroll">
+          <table class="info">
+            <thead><tr><th>Part</th><th>Rule in the model</th><th>Basis</th></tr></thead>
+            <tbody>
+              <tr><td>The row</td><td>One 40 m tomato row seen from the side, one plant every 0.5 m. The yellow tape hangs along the whole row at 2.8 m.</td><td>Tape height from a commercial tomato greenhouse in Austria</td></tr>
+              <tr><td>Where adults live</td><td>In the top 40 cm of the canopy, where the young leaves are.</td><td><span class="tag study">Study</span> Adults gather on young leaves</td></tr>
+              <tr><td>Life cycle</td><td>Egg to adult in 23 ± 3 days. Females live about 37 days and lay about 90 eggs. Half of all adults are female.</td><td><span class="tag study">Study</span> De Vis &amp; van Lenteren 2002 (tomato)</td></tr>
+              <tr><td>Eggs and nymphs</td><td>Tracked as a count per plant until they emerge as adults. They cannot fly, so the tape cannot catch them.</td><td><span class="tag study">Study</span> Whitefly biology</td></tr>
+              <tr><td>Flight timing</td><td>No flight at night (20:00–06:00), most flight in the morning around 09:00.</td><td><span class="tag study">Study</span> Liu et al. 1994</td></tr>
+              <tr><td>Temperature</td><td>No flight below 16.5 °C. Activity rises to full at 25 °C. The greenhouse swings ±3 °C over the day.</td><td><span class="tag study">Study</span> threshold (Liu et al. 1994), <span class="tag guess">Assumption</span> upper value</td></tr>
+              <tr><td>Flight distance</td><td>Mostly short hops between neighbouring plants (average 0.3 m); 1 in 10 flights is longer (average 3 m).</td><td><span class="tag study">Study</span> range (Bonsignore 2015), <span class="tag guess">Assumption</span> exact mix</td></tr>
+              <tr><td>Getting caught</td><td>Each flight has a small chance to end on the tape. The chance is highest when the tape touches the canopy top and falls quickly as the gap grows.</td><td><span class="tag study">Study</span> trap-height studies, <span class="tag guess">Assumption</span> exact numbers</td></tr>
+              <tr><td>Start of the infestation</td><td>5 adult whiteflies arrive at one random spot in the row on day 0, as if they came in through a door or on new plants.</td><td>Scenario choice</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-panel" role="tabpanel" id="panel-assumptions" aria-labelledby="tab-assumptions" tabindex="0" hidden>
+        <p>Some values could not be found in a study, so they are <strong>assumptions</strong>. To check how much they matter, each one was set lower and higher (one at a time) and the experiment was repeated with 20 runs per setting. The table shows the median day the tape detects the infestation, with the tape at the canopy top and with a 0.5 m gap.</p>
+        <div class="table-scroll">
+          <table class="info sens">
+            <thead><tr><th>Assumption</th><th>Value used</th><th>Why this value</th><th>Tested</th><th>Gap 0 m</th><th>Gap 0.5 m</th></tr></thead>
+            <tbody>
+              <tr class="base"><td colspan="4">Model as published</td><td>day 31</td><td>day 50</td></tr>
+              <tr><td class="name" rowspan="2">Chance that one flight ends on the tape (tape at canopy top)</td><td rowspan="2">1%</td><td rowspan="2">Chosen so the first flies reach the tape within a week or two, as growers usually see. No study measures this per flight.</td><td>0.5%</td><td>day 39</td><td>day 54*</td></tr>
+              <tr><td>2%</td><td>day 28</td><td>day 40</td></tr>
+              <tr><td class="name" rowspan="2">How fast the catch drops with the gap</td><td rowspan="2">÷ e per 30 cm</td><td rowspan="2">Studies find clearly fewer catches 30 cm above the canopy, but give no exact curve.</td><td>per 20 cm</td><td>day 31</td><td>day 57*</td></tr>
+              <tr><td>per 50 cm</td><td>day 31</td><td>day 40</td></tr>
+              <tr><td class="name" rowspan="2">Flights per adult per day (warm, daytime)</td><td rowspan="2">4</td><td rowspan="2">Adults mostly sit and feed, with a few short flights a day.</td><td>2</td><td>day 38</td><td>day 56*</td></tr>
+              <tr><td>8</td><td>day 29</td><td>day 43</td></tr>
+              <tr><td class="name" rowspan="2">Share of eggs that become adults</td><td rowspan="2">50%</td><td rowspan="2">Middle of the range in life-table studies; real survival depends on the crop and climate.</td><td>30%</td><td>day 35</td><td>day 56*</td></tr>
+              <tr><td>70%</td><td>day 30</td><td>day 44</td></tr>
+              <tr><td class="name" rowspan="2">Temperature for full flight activity</td><td rowspan="2">25 °C</td><td rowspan="2">Only the lower threshold (16–17 °C) is published.</td><td>22 °C</td><td>day 31</td><td>day 51</td></tr>
+              <tr><td>28 °C</td><td>day 36</td><td>day 52*</td></tr>
+              <tr><td class="name" rowspan="2">Share of long flights</td><td rowspan="2">10%</td><td rowspan="2">Studies describe short and long flights but not the exact mix.</td><td>5%</td><td>day 31</td><td>day 50</td></tr>
+              <tr><td>20%</td><td>day 31</td><td>day 50</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note">* The tape did not detect the infestation within 60 days in some runs; the day shown is the median of the runs that did detect it. Reproduce with <code>python3 scripts/sensitivity.py</code>.</p>
+        <div class="callout">
+          <strong>What this means:</strong> the exact days depend on these guesses, so the model cannot say "your tape will detect on day 31". But in every case a 0.5 m gap delays detection by roughly <strong>1½ to 4 weeks</strong>. The main finding, that the gap between canopy and tape costs weeks of warning, holds whichever way the guesses are off.
+        </div>
+      </div>
+
+      <div class="tab-panel" role="tabpanel" id="panel-measures" aria-labelledby="tab-measures" tabindex="0" hidden>
+        <p>The experiment keeps everything the same except the <strong>gap between the canopy top and the tape</strong>. For each gap it runs several random infestations (different arrival spots and random events) for 60 days, plus the same runs with no tape at all as a baseline.</p>
+        <dl class="defs">
+          <dt>First fly on tape</dt>
+          <dd>The day the first whitefly is caught. A very early but noisy signal: one fly can be chance.</dd>
+          <dt>Detected</dt>
+          <dd>The day the tape holds 5 flies (changeable with the slider). This stands in for the point where someone checking the tape would act.</dd>
+          <dt>Adults at detection</dt>
+          <dd>How many adult whiteflies are already living in the row on the detection day. Shows how late the warning comes.</dd>
+          <dt>Eggs and nymphs at detection</dt>
+          <dd>The hidden next generation on the leaves at that moment. The tape cannot see these, but they will become adults within about three weeks.</dd>
+          <dt>Never detected in 60 days</dt>
+          <dd>Share of runs where the tape never reached 5 flies. These runs are left out of the day and size medians, so a high value here means the medians are based on fewer runs.</dd>
+          <dt>Fewer adults than without tape</dt>
+          <dd>How much the tape itself reduces the population by catching flies, compared with the same runs without tape.</dd>
+          <dt>Median</dt>
+          <dd>The middle value of all runs. Used instead of the average because a few unusual runs would pull the average around.</dd>
+        </dl>
+        <p class="note">The browser runs 10 infestations per gap so it stays quick; the README results use 20. Every run is reproducible: the same random seed gives exactly the same run, in the browser and in the Python version.</p>
+      </div>
+
+      <div class="tab-panel" role="tabpanel" id="panel-sources" aria-labelledby="tab-sources" tabindex="0" hidden>
+        <ul class="sources">
+          <li><strong>Flight timing, temperature threshold, trap height:</strong> Liu et al. 1994, <em>Journal of Entomological Science</em>. Traps just above the canopy catch more than higher ones; morning flight peak; flight starts at 16–17 °C.</li>
+          <li><strong>Flight near yellow traps:</strong> Gillespie, <a href="https://resolve.cambridge.org/core/journals/canadian-entomologist/article/flight-behavior-of-the-greenhouse-whitefly-trialeurodes-vaporariorum-westwood-homoptera-aleyrodidae-in-relation-to-yellow-sticky-traps1/3CBE1FBE161EE15949EDAD0632FA8FCC" rel="noopener">The Canadian Entomologist</a>.</li>
+          <li><strong>Traps at, above and below the canopy top:</strong> <a href="https://summit.sfu.ca/_flysystem/fedora/sfu_migrate/6038/b15324175.pdf" rel="noopener">SFU thesis, greenhouse cucumber</a>.</li>
+          <li><strong>Upper traps catch more whiteflies in tomato:</strong> <a href="https://www.koreascience.or.kr/article/JAKO201209857779036.pdf" rel="noopener">Korean tomato study</a>.</li>
+          <li><strong>Hang traps just above the canopy and raise them with the crop:</strong> <a href="https://ipm.cahnr.uconn.edu/wp-content/uploads/sites/3216/2022/12/2019stickycardsfactsheet-1.pdf" rel="noopener">UConn sticky card fact sheet</a>.</li>
+          <li><strong>Flight types and distances:</strong> Bonsignore 2015, <a href="https://zendy.io/title/10.1111/ens.12097" rel="noopener">Entomological Science</a>.</li>
+          <li><strong>Life history on tomato:</strong> <a href="https://archive.bulletinofinsectology.org/pdfarticles/vol55-2002-003-008devis.pdf" rel="noopener">De Vis &amp; van Lenteren 2002, Bulletin of Insectology</a>.</li>
+          <li><strong>Development and temperature:</strong> <a href="https://cipotato.org/riskatlasforafrica?p=882" rel="noopener">CIP pest risk atlas</a>.</li>
+          <li><strong>Yellow traps better for monitoring than for control:</strong> <a href="https://www.jstage.jst.go.jp/article/aez1966/22/2/22_2_159/_article/-char/en" rel="noopener">1987 study, Applied Entomology and Zoology</a>.</li>
+        </ul>
+      </div>
+
+      <div class="tab-panel" role="tabpanel" id="panel-limits" aria-labelledby="tab-limits" tabindex="0" hidden>
+        <ul class="limits">
+          <li><strong>Development speed does not depend on temperature.</strong> Only flight does. Real whiteflies develop faster when it is warmer, so warm greenhouses would see faster growth than shown here.</li>
+          <li><strong>Several values are assumptions</strong> (see the Assumptions tab). Real tape counts from greenhouse monitoring could be used to calibrate them.</li>
+          <li><strong>One row, seen from the side.</strong> Neighbouring rows, height differences along the row and the aisles are left out.</li>
+          <li><strong>No pest control.</strong> No parasitic wasps (such as <em>Encarsia formosa</em>), no spraying, no plant damage.</li>
+          <li><strong>The tape never fills up or gets dirty,</strong> and its yellow does not fade, so the catch chance stays the same over the run.</li>
+          <li><strong>It shows size and direction, not exact days.</strong> Use it to compare tape placements, not to predict a date in a real greenhouse.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
   <footer class="foot">
-    <p>Sources and model assumptions are listed in the README. Values not taken from a study are marked as assumptions. Model and experiments in Python; this page runs a JavaScript mirror of it that is tested to give identical results.</p>
+    <p>Model and experiments in Python; this page runs a JavaScript mirror of the same model that is tested to give identical results. Code, tests and full write-up: <a href="https://github.com/NadaAbbas444/whitefly-agent-based-sim">github.com/NadaAbbas444/whitefly-agent-based-sim</a>.</p>
   </footer>
 
   <script type="module" src="src/app.js"></script>
