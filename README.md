@@ -64,6 +64,24 @@ Five adult whiteflies arrive at one spot on day 0, at 23 °C. Each gap was run 2
 
 These numbers come from a model with several assumed values (listed below). They show the *size and direction* of the effect, not exact days for a real greenhouse.
 
+### Does the result depend on the assumptions?
+
+Each assumed value was set lower and higher, one at a time, with 20 runs per setting (`python3 scripts/sensitivity.py`). Median detection day:
+
+| Assumption | Tested | Gap 0 m | Gap 0.5 m |
+|---|---:|---:|---:|
+| Model as published | — | day 31 | day 50 |
+| Catch chance per flight (1%) | 0.5% / 2% | day 39 / 28 | day 54* / 40 |
+| Catch drop with gap (÷ e per 30 cm) | per 20 cm / 50 cm | day 31 / 31 | day 57* / 40 |
+| Flights per adult per day (4) | 2 / 8 | day 38 / 29 | day 56* / 43 |
+| Eggs that become adults (50%) | 30% / 70% | day 35 / 30 | day 56* / 44 |
+| Temperature for full flight (25 °C) | 22 / 28 °C | day 31 / 36 | day 51 / 52* |
+| Share of long flights (10%) | 5% / 20% | day 31 / 31 | day 50 / 50 |
+
+\* Some runs never detected the infestation within 60 days; the median is over the runs that did.
+
+The exact days move with the assumptions, but **in every case a 0.5 m gap delays detection by about 9 to 26 days**. The main finding holds whichever way the guesses are off.
+
 ## How the model works
 
 Every adult whitefly is an independent agent. Eggs and nymphs are tracked as a queue that turns into adults after the development time.
@@ -119,6 +137,7 @@ pip install -r requirements-dev.txt
 python3 scripts/experiment.py                                # gap sweep, prints the results table
 python3 scripts/experiment.py --temp 18                      # cooler greenhouse
 python3 scripts/experiment.py --plot docs/results-plot.png   # also save the figure
+python3 scripts/sensitivity.py                               # assumption check (about 30 s)
 pytest                                                       # 22 tests, incl. Python vs. browser cross-check
 ```
 
@@ -139,6 +158,7 @@ whitefly/sim.py               reference model (agents, life cycle, flight, tape)
 whitefly/experiment.py        gap sweep and summary statistics
 scripts/experiment.py         command-line experiment, prints the results table
 scripts/plot_results.py       results figure (matplotlib)
+scripts/sensitivity.py        checks how much the assumed values change the result
 tests/test_sim.py             model tests (pytest)
 tests/test_cross_check.py     browser demo must match Python exactly
 
