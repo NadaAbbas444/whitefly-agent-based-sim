@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this simulation, please cite it as below."
+title: "Whitefly Tape Watch: an agent-based simulation of yellow sticky tape monitoring in greenhouse tomato"
+authors:
+  - family-names: Fahim
+    given-names: Nada
+type: software
+license: MIT
+version: 1.0.0
+date-released: 2026-11-17
+repository-code: "https://github.com/nadaabbas444/whitefly-agent-based-sim"
+url: "https://nadaabbas444.github.io/whitefly-agent-based-sim/"
+keywords:
+  - agent-based model
+  - greenhouse whitefly
+  - Trialeurodes vaporariorum
+  - pest monitoring
+  - yellow sticky traps

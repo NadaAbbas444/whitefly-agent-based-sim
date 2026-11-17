@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "whitefly-agent-based-sim"
+version = "1.0.0"
+description = "Whitefly Tape Watch: an agent-based simulation of when a yellow sticky tape detects a whitefly infestation in a greenhouse tomato row."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Nada Fahim" }]
+keywords = ["agent-based model", "simulation", "greenhouse", "pest monitoring", "whitefly", "agriculture"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Scientific/Engineering :: Artificial Life",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "matplotlib>=3.6", "ruff>=0.5"]
+
+[project.urls]
+Demo = "https://nadaabbas444.github.io/whitefly-agent-based-sim/"
+Source = "https://github.com/nadaabbas444/whitefly-agent-based-sim"
+
+[tool.setuptools]
+packages = ["whitefly"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]

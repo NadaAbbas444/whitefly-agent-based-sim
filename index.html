@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Whitefly Tape Watch · Agent-Based Simulation</title>
+  <meta name="description" content="When does a yellow sticky tape notice a whitefly infestation? An agent-based side-view simulation of one tomato row, built on published whitefly biology." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230f1a14'/%3E%3Crect x='4' y='8' width='24' height='5' fill='%23f2d21b'/%3E%3Ccircle cx='12' cy='22' r='3' fill='%23f4f7f2'/%3E%3Ccircle cx='21' cy='20' r='3' fill='%23f4f7f2'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <p class="eyebrow">Agent-based simulation · greenhouse pest monitoring</p>
+        <h1>Whitefly Tape Watch</h1>
+        <p class="lede">
+          Tomato growers hang yellow sticky tape above the crop to spot whiteflies early.
+          But how early does the tape actually notice an infestation, and does it matter how far the plants are below it?
+          This simulation of one greenhouse row, built on published whitefly biology, measures it.
+        </p>
+        <div class="hero-links">
+          <a class="btn primary" href="#sim">Try the simulation</a>
+          <a class="btn" href="#experiment">See the results</a>
+        </div>
+      </div>
+      <img class="hero-photo" src="assets/greenhouse-rows.jpg" alt="Long rows of tomato plants in a commercial greenhouse" />
+    </div>
+  </header>
+
+  <section class="explain" aria-label="What this project is">
+    <article class="step">
+      <img src="assets/sticky-card.jpg" style="object-position: center 30%" alt="A yellow sticky trap hanging between tomato plants" loading="lazy" />
+      <div>
+        <span class="num">1</span>
+        <h2>The pest</h2>
+        <p>Whiteflies are tiny insects that live on the young leaves at the top of tomato plants and lay their eggs there. Eggs take about three weeks to become adults, so an infestation grows quietly before it shows.</p>
+      </div>
+    </article>
+    <article class="step">
+      <div class="step-art" aria-hidden="true">
+        <svg viewBox="0 0 200 120">
+          <rect x="10" y="18" width="180" height="10" fill="#f2d21b"/>
+          <g stroke="#2f6e3b" stroke-width="3"><line x1="30" y1="118" x2="30" y2="62"/><line x1="70" y1="118" x2="70" y2="62"/><line x1="110" y1="118" x2="110" y2="62"/><line x1="150" y1="118" x2="150" y2="62"/></g>
+          <g fill="#3f8a4a"><ellipse cx="30" cy="64" rx="18" ry="9"/><ellipse cx="70" cy="64" rx="18" ry="9"/><ellipse cx="110" cy="64" rx="18" ry="9"/><ellipse cx="150" cy="64" rx="18" ry="9"/></g>
+          <g fill="#f4f7f2"><circle cx="64" cy="58" r="2.5"/><circle cx="104" cy="60" r="2.5"/><circle cx="147" cy="57" r="2.5"/></g>
+          <g stroke="#9db3a4" stroke-width="1.2"><line x1="182" y1="30" x2="182" y2="55"/><line x1="177" y1="30" x2="187" y2="30"/><line x1="177" y1="55" x2="187" y2="55"/></g>
+          <text x="176" y="47" fill="#9db3a4" font-size="10" text-anchor="end" font-family="system-ui">gap</text>
+        </svg>
+      </div>
+      <div>
+        <span class="num">2</span>
+        <h2>The tape</h2>
+        <p>A long yellow sticky tape hangs along the row, here at 2.8 m. Whiteflies are drawn to yellow, so the flies stuck on it show that the pest is present. Studies find traps catch most when they sit right at the top of the canopy.</p>
+      </div>
+    </article>
+    <article class="step">
+      <img src="assets/tomato.jpg" alt="A ripening tomato hanging above the greenhouse heating pipes" loading="lazy" />
+      <div>
+        <span class="num">3</span>
+        <h2>The question</h2>
+        <p>The tape stays put, but the plants are not always right below it. With a gap between canopy and tape, <strong>how many days does it take before the tape shows an infestation, and how big is it by then?</strong></p>
+      </div>
+    </article>
+  </section>
+
+  <main class="layout">
+    <section class="stage" id="sim" aria-label="Greenhouse simulation">
+      <div class="canvas-wrap">
+        <canvas id="world" aria-label="Side view of one greenhouse row with plants, whiteflies and the yellow tape"></canvas>
+        <div class="legend">
+          <span><i class="dot fly"></i>Whitefly</span>
+          <span><i class="dot caught"></i>Caught on tape</span>
+          <span><i class="dot trap"></i>Sticky tape</span>
+          <span><i class="dot plant"></i>Young leaves (where adults live)</span>
+          <span class="axis-note">Side view of one 40 m row. Height is stretched.</span>
+        </div>
+      </div>
+
+      <div class="tiles">
+        <div class="tile"><span class="label">Time</span><span class="value" id="s-time">Day 0</span></div>
+        <div class="tile"><span class="label">Adult whiteflies</span><span class="value" id="s-adults">0</span></div>
+        <div class="tile"><span class="label">Eggs and nymphs</span><span class="value" id="s-immature">0</span></div>
+        <div class="tile"><span class="label">Flies on tape</span><span class="value" id="s-caught">0</span></div>
+        <div class="tile status"><span class="label">Tape says</span><span class="value" id="s-detect">Nothing yet</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>What is really there vs. what the tape shows</h2>
+          <div class="keys"><span class="k adults">Adults in the crop</span><span class="k captured">Flies on the tape</span></div>
+        </div>
+        <canvas id="live-chart" class="chart"></canvas>
+      </div>
+    </section>
+
+    <aside class="panel" aria-label="Controls">
+      <div class="row buttons">
+        <button id="play" class="primary">Pause</button>
+        <button id="reset">Reset</button>
+        <label class="inline">Speed
+          <select id="speed">
+            <option value="1">1×</option>
+            <option value="2">2×</option>
+            <option value="4" selected>4×</option>
+            <option value="8">8×</option>
+          </select>
+        </label>
+      </div>
+
+      <fieldset>
+        <legend>Tape and crop</legend>
+        <label class="slider">Tape height (m) <output id="o-tapeHeight"></output>
+          <input type="range" id="tapeHeight" min="2" max="3.4" step="0.05" />
+        </label>
+        <label class="slider">Canopy top at start (m) <output id="o-canopyHeight"></output>
+          <input type="range" id="canopyHeight" min="1" max="3.4" step="0.05" />
+        </label>
+        <label class="slider">Crop growth (m per week) <output id="o-canopyGrowth"></output>
+          <input type="range" id="canopyGrowth" min="0" max="0.3" step="0.01" />
+        </label>
+        <p class="note" id="gap-note"></p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Climate and pest</legend>
+        <label class="slider">Average temperature (°C) <output id="o-tempMean"></output>
+          <input type="range" id="tempMean" min="14" max="30" step="0.5" />
+        </label>
+        <label class="slider">Whiteflies arriving at day 0 <output id="o-initialAdults"></output>
+          <input type="range" id="initialAdults" min="1" max="30" step="1" />
+        </label>
+        <label class="slider">Flies on tape that count as "detected" <output id="o-detectThreshold"></output>
+          <input type="range" id="detectThreshold" min="1" max="20" step="1" />
+        </label>
+        <label class="inline">Random seed <input type="number" id="seed" value="1" min="0" step="1" /></label>
+        <p class="note">Arriving flies and seed apply on Reset. The run pauses at day 90.</p>
+      </fieldset>
+    </aside>
+  </main>
+
+  <section class="experiment layout-single" id="experiment">
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>Experiment: how much does the gap matter?</h2>
+          <p class="sub">For six gaps between canopy top and tape, runs 10 random infestations for 60 days each, plus 10 runs without tape. Uses your current temperature, arrival and threshold settings.</p>
+        </div>
+        <button id="run-exp" class="primary">Run experiment</button>
+      </div>
+      <p id="exp-status" class="status" aria-live="polite">Press <strong>Run experiment</strong>. It takes a few seconds.</p>
+      <div class="exp-charts">
+        <div>
+          <h3>Day the tape shows the infestation (median)</h3>
+          <canvas id="exp-chart-days" class="chart"></canvas>
+          <div class="keys"><span class="k first">First fly on tape</span><span class="k detect">Detected (threshold reached)</span></div>
+        </div>
+        <div>
+          <h3>Adults already in the crop at detection (median)</h3>
+          <canvas id="exp-chart-size" class="chart"></canvas>
+        </div>
+      </div>
+      <table id="exp-table" class="results" hidden>
+        <thead><tr>
+          <th>Gap</th><th>First fly on tape</th><th>Detected</th><th>Adults at detection</th>
+          <th>Eggs and nymphs at detection</th><th>Never detected in 60 days</th><th>Fewer adults than without tape</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <p>Sources and model assumptions are listed in the README. Values not taken from a study are marked as assumptions. Model and experiments in Python; this page runs a JavaScript mirror of it that is tested to give identical results.</p>
+  </footer>
+
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "whitefly-agent-based-sim",
+  "version": "1.0.0",
+  "description": "Browser demo for Whitefly Tape Watch, an agent-based simulation of whitefly detection with yellow sticky tape. The reference model is the Python package in whitefly/.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "reference": "node scripts/export_reference.mjs > tests/fixtures/js_reference.json",
+    "serve": "python3 -m http.server 8080"
+  },
+  "license": "MIT"
+}
